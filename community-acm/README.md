@@ -1,18 +1,14 @@
 
-# Install the Advanced Cluster Management for Kubernetes community edition
+# How to install the Advanced Cluster Management for Kubernetes community edition
 ## Console Quickstart
 1. The minimum size for a Single node OpenShift if availability basic is an AWS m5.2xlarge (8 vCPU, 32GB RAM, 100GB DISK)
-2. Connect the `oc` cli to this cluster
-3. Apply the operator subscription yaml
-```
-  oc apply -f ./operator/community-0.5.yaml
-  
-  # This creates a namespace(project), operator group and subscription in the stolostron namespace
-```
-4. Monitor the operator install `Status` from the OpenShift console `Operators` > `Installed Operators`, select the project `stolostron`, the console will show the `Stolostron` operator
-5. Make sure the version displayed under the name `Stolostron` matches the expected version and that the `Status` shows `Succeeded`
-6. Navigate by choosing the `Stolostron` operator and then the `MultiClusterHub` tab
-7. Use the `Create MultiClusterHub` button, leave the defaults and expand the `Advanced configuration` section if you are using a 2xlarge single node cluster, set the `Availability Configuration` to `Basic` to limit the size of the install
+2. Connect to the OCP console
+3. Navigate to `Operators` > `OperatorHub`
+4. Search for `stolostron` and choose the `Stolostron` tile
+5. Select the desired `Version` and press `Install`
+6. Monitor the operator install `Status` from the OpenShift console `Operators` > `Installed Operators`, select the project `stolostron`, the console will show the `Stolostron` operator. Make sure the version displayed under the name `Stolostron` matches the expected version and that the `Status` shows `Succeeded`
+6. Select the `Stolostron` operator and then the `MultiClusterHub` tab
+7. Use the `Create MultiClusterHub` button, leave the defaults and expand the `Advanced configuration` section, if you are using a 2xlarge single node OpenShift cluster, set the `Availability Configuration` to `Basic` to limit the size of the install
 8. Press `Create`
 
 ### Monitoring the install
@@ -59,10 +55,20 @@ DONE!
 DONE!
 
 ## Uninstall
-1. Remove the `MultiClusterHub` resource from the `stolostron` `Operator details` page or the cli (10min)
+### Console
+1. Navigate to `Operators` > `Installed Operator` and select the `stolostrong` project
+2. Select the three virtical action dots for the `Stolostron` operator and choose `Uninstall Operator`
+3. Select `Delete all operand instances for this operator` and press `Uninstall`
+4. Delete takes about 10 minutes
+DONE!
+
+### CLI
+1. Remove the `MultiClusterHub` resource from the `stolostron` project
    ```
    oc -n stolostron delete multiclusterhub multiclusterhub [--wait=false]
    ```
+2. Delete takes about 10 minutes
+DONE!
 
 ## Extras
 ### Hosted Control Planes
