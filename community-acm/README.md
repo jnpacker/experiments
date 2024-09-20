@@ -7,12 +7,12 @@
 4. Search for `stolostron` and choose the `Stolostron` tile
 5. Select the desired `Version` and press `Install`
 6. Monitor the operator install `Status` from the OpenShift console `Operators` > `Installed Operators`, select the project `stolostron`, the console will show the `Stolostron` operator. Make sure the version displayed under the name `Stolostron` matches the expected version and that the `Status` shows `Succeeded`
-6. Select the `Stolostron` operator and then the `MultiClusterHub` tab
-7. Use the `Create MultiClusterHub` button, leave the defaults and expand the `Advanced configuration` section, if you are using a 2xlarge single node OpenShift cluster, set the `Availability Configuration` to `Basic` to limit the size of the install
+6. Select the `Stolostron` operator and press the `Create MultiClusterHub` button
+7. Keep the defaults and expand the `Advanced configuration` section, if you are using a 2xlarge single node OpenShift cluster, set the `Availability Configuration` to `Basic` to limit the size of the install
 8. Press `Create`
 
 ### Monitoring the install
-9. Navigate to the `Operators` > `Installed Operators` page, select the `stolostron-engine` project and look for the `Stolostron Engine` operator (may take a few minutes to appear) and watch the status, it will reach `Succeeeded` in about 5min
+9. Navigate to the `Operators` > `Installed Operators` page, select the `stolostron-engine` project and look for the `Stolostron Engine` operator (may take a few minutes to appear) and watch the status, it will reach `Succeeeded` in about 5 minutes
 10. After the `Stolostron Engine` operator `Suceeded`, the `MultiCluster Engine` resource will appear and reach `Status` `Phase: Available`. This can be seen on the `MultiCluster Engine` tab of the `Stolostron Engine` operator
 11. Return to the `stolostron` project, and click into the `Stolostron` operator. On the `MultiClusterHubs` tab the resource will reach `Status` `Phase: Running` (10min total)
 DONE!
