@@ -1,42 +1,72 @@
 
-# How to install the community edition of ACM
-## Quickstart
-1. Log into an OpenShift cluster, Minimum size is Single node OpenShift m5.2xlarge (AWS)
-2. Apply the operator.yaml
+# Install the Advanced Cluster Management for Kubernetes community edition
+## Console Quickstart
+1. The minimum size for a Single node OpenShift if availability basic is an AWS m5.2xlarge (8 vCPU, 32GB RAM, 100GB DISK)
+2. Connect the `oc` cli to this cluster
+3. Apply the operator subscription yaml
 ```
-  oc apply -f ./operator/install-community-0.5.yaml
+  oc apply -f ./operator/community-0.5.yaml
+  
+  # This creates a namespace(project), operator group and subscription in the stolostron namespace
 ```
-3. Check the Stolostron CSV from the cli, or use the OpenShift console `Operators` > `Installed Operators`
-```
-  oc -n open-cluster-management get csv stolostron.v0.5.0  # Where v0.5.0 is the community-VERSION you chose X.Y.Z
+4. Monitor the operator install `Status` from the OpenShift console `Operators` > `Installed Operators`, select the project `stolostron`, the console will show the `Stolostron` operator
+5. Make sure the version displayed under the name `Stolostron` matches the expected version and that the `Status` shows `Succeeded`
+6. Navigate by choosing the `Stolostron` operator and then the `MultiClusterHub` tab
+7. Use the `Create MultiClusterHub` button, leave the defaults and expand the `Advanced configuration` section if you are using a 2xlarge single node cluster, set the `Availability Configuration` to `Basic` to limit the size of the install
+8. Press `Create`
 
-  # Look for the `status` > `Conditions` > `Phase`
-  #
-  Message: waiting for install components to report healthy
-  Phase: Installing
-  Reason: InstallSucceeded
-```
-4. Create the Multi-Cluster Hub custom resource, this can be done in the console at the `Details` section, but pressing the button to create the `Multi-Cluster Hub` custom resource. Leave the defaults and `save` it, about 5min's later ACM should be installed
-```
-  # CLI command
-  oc apply -f multiclusterhub.yaml -o yaml
-```
+### Monitoring the install
+9. Navigate to the `Operators` > `Installed Operators` page, select the `stolostron-engine` project and look for the `Stolostron Engine` operator (may take a few minutes to appear) and watch the status, it will reach `Succeeeded` in about 5min
+10. After the `Stolostron Engine` operator `Suceeded`, the `MultiCluster Engine` resource will appear and reach `Status` `Phase: Available`. This can be seen on the `MultiCluster Engine` tab of the `Stolostron Engine` operator
+11. Return to the `stolostron` project, and click into the `Stolostron` operator. On the `MultiClusterHubs` tab the resource will reach `Status` `Phase: Running` (10min total)
+DONE!
 
-6. Monitor multiclusterengine status
-   * Check `Stolostron-Engine` first, navigate to the multiclusterengine and validate the event `All components deployed`
-    ```
-    # From the cli
-    oc get multiclusterengine multiclusterengine
-    # At the very bottom look for
-    #
-    phase: Available
-    ```
-7. Monitor multiclusterhub status
-    * Check `Stolostron` second, navigate to the multiclusterhub and validate the event `All components deployed`
-    ```
-    # From the cli
-    oc get open-cluster-management multiclusterhub
-    # At the very bottom look for
-    #
-    phase: Available
-    ```
+## CLI Quickstart
+1. The minimum size for a Single node OpenShift if availability basic is an AWS m5.2xlarge (8 vCPU, 32GB RAM, 100GB DISK)
+2. Connect the `oc` cli to this cluster
+3. Apply the operator subscription yaml
+```
+  oc apply -f ./operator/community-0.5.yaml
+  
+  # This creates a namespace(project), operator group and subscription in the stolostron namespace
+```
+4. Monitor the operator install `Status` with the following command:
+   ```
+   oc -n stolostron get csv
+   ```
+   The expected `Status` should reach `Succeeded`
+5. Next create the `MultiClusterHub` resource:
+   ```
+   oc create -f ./multiclusterhub.yaml
+   ```
+6. Monitor the install status
+   ```
+   oc -n stolostron get multiclusterhub --watch
+   ```
+7. The install is complete when the `STATUS` reaches `Running`
+8. During the install phase, the `Stolostron Engine` operator and the `multicluster-egnine` resource get created and installed
+   ```
+   oc -n stolostron-engine get csv
+   ```
+   The operator is ready when the `PHASE` is `Suceeded` (1-5min)
+   Next the `multiclusterengine` resource is created automatically by the install, which can be monitored
+   ```
+   oc -n stolstron-engine get multiclusterengine
+   ```
+   The resource has completed installing when the `STATUS` reaches `Available`
+9. One the monitoring command in step 6 shows `STATUS` `Running` the install is complete.
+10. Visit the OpenShift console to start exploring
+DONE!
+
+## Uninstall
+1. Remove the `MultiClusterHub` resource from the `stolostron` `Operator details` page or the cli (10min)
+   ```
+   oc -n stolostron delete multiclusterhub multiclusterhub [--wait=false]
+   ```
+
+## Extras
+### Hosted Control Planes
+To leverage Hosted Control Planes in this build, you need to apply the following image override YAML
+```
+oc apply -f ./hcp-imageoverride.yaml
+```

@@ -1,5 +1,5 @@
-# experiments
-Different experiments in kubernetes
+# Experiments
+Different experiments with kubernetes
 
-## Installing the Advanced Cluster Management for Kubernetes Community operator
+## Install Advanced Cluster Management for Kubernetes community operator
 [Red Hat ACM Community operator](./community-acm)

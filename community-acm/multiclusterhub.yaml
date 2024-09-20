@@ -4,7 +4,9 @@ metadata:
 #  annotations:
 #    installer.open-cluster-management.io/mce-subscription-spec: '{"source": "community-operators"}'
   name: multiclusterhub
-  namespace: open-cluster-management
+  namespace: stolostron
 ## NOT USED ##
-#spec:
+spec:
 #  imagePullSecret: multiclusterhub-operator-pull-secret
+  availabilityConfig: Basic
+  enableClusterBackup: false
