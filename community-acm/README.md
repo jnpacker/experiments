@@ -14,7 +14,7 @@
 ### Monitoring the install
 9. Navigate to the `Operators` > `Installed Operators` page, select the `stolostron-engine` project and look for the `Stolostron Engine` operator (may take a few minutes to appear) and watch the status, it will reach `Succeeeded` in about 5 minutes
 10. After the `Stolostron Engine` operator `Suceeded`, the `MultiCluster Engine` resource will appear and reach `Status` `Phase: Available`. This can be seen on the `MultiCluster Engine` tab of the `Stolostron Engine` operator
-11. Return to the `stolostron` project, and click into the `Stolostron` operator. On the `MultiClusterHubs` tab the resource will reach `Status` `Phase: Running` (10min total)
+11. Return to the `stolostron` project, and select the `Stolostron` operator, then the `MultiClusterHubs` tab, the resource will reach `Status` `Phase: Running` (10min total)
 DONE!
 
 ## CLI Quickstart
