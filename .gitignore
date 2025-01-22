@@ -1,1 +1,2 @@
-cnv/*.yaml
+cnv/fedora-ephemeral.yaml
+cnv/fedora-persistent.yaml
