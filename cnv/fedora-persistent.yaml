@@ -42,7 +42,7 @@ spec:
             userData: |
               #cloud-config
               hostname: fedora-0
-              password: fedora
+              password: *****
               chpasswd: { expire: False }
               ssh_pwauth: True
               disable_root: false
