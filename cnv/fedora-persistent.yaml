@@ -1,66 +1,67 @@
----
 apiVersion: kubevirt.io/v1
-metadata:
-  labels:
-    special: vm-per
-  name: vm-per
 kind: VirtualMachine
+metadata:
+  name: vm-per-01
+  namespace: default
 spec:
-  running: false
+  dataVolumeTemplates:
+  - metadata:
+    name: fedora-persist-dv
+  spec:
+    pvc:
+      storageClassName: gp3-csi
+      accessModes:
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: 5Gi
+    source:
+      registry: 
+        url: docker://quay.io/kubevirt/fedora-cloud-container-disk-demo
+  instancetype:
+    name: u1.small
+  preference:
+    name: fedora
+  running: true
   template:
     metadata:
       labels:
-        kubevirt.io/vm: vm-fedora-persist
+        network.kubevirt.io/headlessService: headless
     spec:
-      networks:
-      - name: default
-        pod: {}
       domain:
         devices:
           interfaces:
-            - name: default
-              masquerade: {}
+            - masquerade: {}
+              name: default
           disks:
           - disk:
               bus: virtio
-            name: datavolumedisk1
+            name: containerdisk
           - disk:
               bus: virtio
             name: cloudinitdisk
           rng: {}
         machine:
           type: ""
-        resources:
-          requests:
-            memory: 2048M 
-      terminationGracePeriodSeconds: 0
+        #resources:
+        #  requests:
+        #    memory: 1024M 
+      networks:
+        - name: default
+          pod: {}
+      subdomain: headless
       volumes:
-        - dataVolume:
-            name: fedora-persist-dv
-          name: datavolumedisk1
-        - cloudInitNoCloud:
-            userData: |
-              #cloud-config
-              hostname: fedora-0
-              password: *****
-              chpasswd: { expire: False }
-              ssh_pwauth: True
-              disable_root: false
-              # Place your ssh public key here
-              #ssh_authorized_keys:
-              #  - ssh-rsa ...
-          name: cloudinitdisk
-  dataVolumeTemplates:
-    - metadata:
-        name: fedora-persist-dv
-      spec:
-        pvc:
-          storageClassName: gp3-csi
-          accessModes:
-          - ReadWriteMany
-          resources:
-            requests:
-              storage: 5Gi
-        source:
-          registry: 
-            url: docker://quay.io/kubevirt/fedora-cloud-container-disk-demo
+      - containerDisk:
+          image: quay.io/kubevirt/fedora-cloud-container-disk-demo
+        name: containerdisk
+      - cloudInitNoCloud:
+          userData: |
+            #cloud-config
+            hostname: fedora-0
+            password: fedora
+            chpasswd: { expire: False }
+            ssh_pwauth: True
+            disable_root: false
+            ssh_authorized_keys:
+              - ssh-rsa YOUR_PUBLIC_KEY_HERE
+        name: cloudinitdisk

@@ -1,46 +1,53 @@
----
 apiVersion: kubevirt.io/v1
-kind: VirtualMachineInstance
+kind: VirtualMachine
 metadata:
-  labels:
-    special: vm-eph
-  name: vm-eph
+  name: fedora-ephemeral
+  namespace: default
 spec:
-  networks:
-  - name: default
-    pod: {}
-  domain:
-    devices:
-      interfaces:
+  instancetype:
+    name: u1.small
+  preference:
+    name: fedora
+  running: true
+  template:
+    metadata:
+      labels:
+        network.kubevirt.io/headlessService: headless
+    spec:
+      domain:
+        devices:
+          interfaces:
+            - masquerade: {}
+              name: default
+          disks:
+          - disk:
+              bus: virtio
+            name: containerdisk
+          - disk:
+              bus: virtio
+            name: cloudinitdisk
+          rng: {}
+        machine:
+          type: ""
+        #resources:
+        #  requests:
+        #    memory: 1024M 
+      networks:
         - name: default
-          masquerade: {}
-      disks:
-      - disk:
-          bus: virtio
+          pod: {}
+      subdomain: headless
+      volumes:
+      - containerDisk:
+          image: quay.io/kubevirt/fedora-cloud-container-disk-demo
         name: containerdisk
-      - disk:
-          bus: virtio
+      - cloudInitNoCloud:
+          userData: |
+            #cloud-config
+            hostname: fedora-0
+            password: fedora
+            chpasswd: { expire: False }
+            ssh_pwauth: True
+            disable_root: false
+            ssh_authorized_keys:
+              - ssh-rsa YOUR_PUBLIC_KEY_HERE
         name: cloudinitdisk
-      rng: {}
-    machine:
-      type: ""
-    resources:
-      requests:
-        memory: 1024M 
-  terminationGracePeriodSeconds: 0
-  volumes:
-  - containerDisk:
-      image: quay.io/kubevirt/fedora-cloud-container-disk-demo
-    name: containerdisk
-  - cloudInitNoCloud:
-      userData: |
-        #cloud-config
-        hostname: fedora-0
-        password: *****
-        chpasswd: { expire: False }
-        ssh_pwauth: True
-        disable_root: false
-        # Place your ssh public key here
-        #ssh_authorized_keys:
-        #  - ssh-rsa ssh-rsa ...
-    name: cloudinitdisk
